@@ -375,3 +375,290 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================
+   Carte page (scoped)
+========================= */
+
+.page-carte .menu-hero {
+  padding: 80px 0;
+  background: var(--beige-cream);
+}
+
+.page-carte .menu-hero-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.page-carte .menu-title {
+  font-family: var(--font-main);
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: var(--brown-dark);
+  margin: 0 0 12px;
+}
+
+.page-carte .menu-subtitle {
+  margin: 0;
+  color: rgba(46, 31, 24, 0.7);
+}
+
+.page-carte .menu-hero-image {
+  background: var(--off-white);
+  border-radius: 18px;
+  padding: 12px;
+  box-shadow: var(--shadow-light);
+}
+
+.page-carte .menu-hero-img {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  border-radius: 14px;
+  display: block;
+}
+
+.page-carte .featured-section {
+  padding: 70px 0;
+  background: var(--beige-cream);
+}
+
+.page-carte .featured-container {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.page-carte .featured-img {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  border-radius: 18px;
+  box-shadow: var(--shadow-medium);
+  display: block;
+}
+
+.page-carte .featured-title {
+  font-family: var(--font-main);
+  margin: 0 0 10px;
+  color: var(--brown-dark);
+}
+
+.page-carte .featured-name {
+  margin: 0 0 14px;
+  color: var(--mocha-medium);
+}
+
+.page-carte .featured-description {
+  margin: 0 0 18px;
+  color: rgba(46, 31, 24, 0.75);
+}
+
+.page-carte .featured-details {
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: var(--shadow-light);
+  margin-bottom: 18px;
+}
+
+.page-carte .detail-item {
+  display: flex;
+  gap: 8px;
+  margin: 6px 0;
+}
+
+.page-carte .detail-label {
+  font-weight: 600;
+  color: var(--brown-dark);
+}
+
+.page-carte .detail-value {
+  color: rgba(46, 31, 24, 0.8);
+}
+
+.page-carte .featured-price {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  color: var(--brown-dark);
+}
+
+.page-carte .price-label {
+  color: rgba(46, 31, 24, 0.65);
+}
+
+.page-carte .price-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--mocha-medium);
+}
+
+.page-carte .menu-categories {
+  padding: 70px 0;
+  background: var(--beige-cream);
+}
+
+.page-carte .category-header {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 24px;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.page-carte .category-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 16px;
+  box-shadow: var(--shadow-light);
+  display: block;
+}
+
+.page-carte .category-title {
+  margin: 0 0 8px;
+  font-family: var(--font-main);
+  color: var(--brown-dark);
+}
+
+.page-carte .category-subtitle {
+  margin: 0;
+  color: rgba(46, 31, 24, 0.65);
+}
+
+.page-carte .menu-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.page-carte .menu-card {
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 16px;
+  padding: 16px 16px 14px;
+  box-shadow: var(--shadow-light);
+  transition: transform var(--transition);
+}
+
+.page-carte .menu-card:hover {
+  transform: translateY(-2px);
+}
+
+.page-carte .menu-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: baseline;
+  margin-bottom: 10px;
+}
+
+.page-carte .menu-card-title {
+  margin: 0;
+  font-weight: 600;
+  color: var(--brown-dark);
+}
+
+.page-carte .menu-card-price {
+  background: rgba(122, 74, 46, 0.12);
+  color: var(--mocha-medium);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.page-carte .menu-card-desc {
+  margin: 0;
+  color: rgba(46, 31, 24, 0.68);
+  font-size: 0.95rem;
+}
+
+.page-carte .origins-section {
+  padding: 70px 0 90px;
+  background: var(--beige-cream);
+}
+
+.page-carte .origins-title {
+  text-align: center;
+  font-family: var(--font-main);
+  margin: 0 0 26px;
+  color: var(--brown-dark);
+}
+
+.page-carte .origins-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.page-carte .origin-card {
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: var(--shadow-light);
+}
+
+.page-carte .origin-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+
+.page-carte .origin-content {
+  padding: 14px 16px 16px;
+}
+
+.page-carte .origin-name {
+  margin: 0 0 8px;
+  font-weight: 600;
+  color: var(--brown-dark);
+}
+
+.page-carte .origin-desc {
+  margin: 0 0 12px;
+  color: rgba(46, 31, 24, 0.7);
+}
+
+.page-carte .origin-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.page-carte .tag {
+  background: rgba(122, 74, 46, 0.12);
+  color: var(--mocha-medium);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .page-carte .menu-hero-container,
+  .page-carte .featured-container {
+    grid-template-columns: 1fr;
+  }
+  .page-carte .menu-grid,
+  .page-carte .origins-grid {
+    grid-template-columns: 1fr;
+  }
+  .page-carte .category-header {
+    grid-template-columns: 1fr;
+  }
+  .page-carte .menu-title {
+    font-size: 2.6rem;
+  }
+}
+
+.nav-link.active {
+  color: var(--color-primary);
+  font-weight: 600;
+}

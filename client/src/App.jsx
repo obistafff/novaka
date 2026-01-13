@@ -1,13 +1,15 @@
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import Home from "./pages/Home";
+import { Routes, Route } from "react-router-dom";
+import SiteLayout from "./layouts/SiteLayout";
+import { routes } from "./router/routes";
 
 export default function App() {
   return (
-    <>
-      <Header />
-      <Home />
-      <Footer />
-    </>
+    <Routes>
+      <Route element={<SiteLayout />}>
+        {routes.map((r) => (
+          <Route key={r.path} path={r.path} element={r.element} />
+        ))}
+      </Route>
+    </Routes>
   );
 }
