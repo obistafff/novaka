@@ -1,0 +1,86 @@
+/* =========================
+   Design System — Novaka
+========================= */
+
+:root {
+  /* Colors */
+  --color-bg: #fbf7f2;
+  --color-surface: #ffffff;
+  --color-primary: #7a4a2e;
+  --color-text: #2e1f18;
+  --color-muted: #8b7d75;
+
+  /* Typography */
+  --font-main: "Montserrat", system-ui, sans-serif;
+
+  /* Spacing */
+  --space-xs: 8px;
+  --space-sm: 16px;
+  --space-md: 24px;
+  --space-lg: 48px;
+  --space-xl: 80px;
+
+  /* Radius & shadow */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --shadow-soft: 0 12px 30px rgba(0,0,0,0.08);
+}
+
+/* Reset minimal */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-main);
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+/* Layout */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+}
+
+.section {
+  padding: var(--space-xl) 0;
+}
+
+/* UI components */
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  box-shadow: var(--shadow-soft);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+}
+
+.app {
+  min-height: 100vh;
+}
