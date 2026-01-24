@@ -43,6 +43,99 @@ export default function Home() {
         </div>
       </section>
 
+      {/* INFOS PRATIQUES */}
+      <section className="section infos">
+        <div className="container infos-grid">
+          {/* LEFT */}
+          <div className="infos-left">
+            <header className="infos-head">
+              <h2 className="infos-title">Infos Pratiques</h2>
+              <div className="infos-line" />
+            </header>
+
+            <div className="infos-cards">
+              <article className="info-card card">
+                <div className="info-row">
+                  <span className="info-icon" aria-hidden="true">📍</span>
+                  <div>
+                    <h3 className="info-label">Adresse</h3>
+                    <p className="info-text">
+                      93 Boulevard Voltaire<br />
+                      35000 Rennes
+                    </p>
+                  </div>
+                </div>
+              </article>
+
+              <article className="info-card card">
+                <div className="info-row">
+                  <span className="info-icon" aria-hidden="true">🕒</span>
+                  <div>
+                    <h3 className="info-label">Horaires</h3>
+                    <p className="info-text">
+                      <strong>Lundi - Vendredi</strong> : 7h00 - 19h00<br />
+                      <strong>Samedi</strong> : 8h00 - 20h00<br />
+                      <strong>Dimanche</strong> : 9h00 - 18h00
+                    </p>
+                  </div>
+                </div>
+              </article>
+
+              <article className="info-card card">
+                <div className="info-row">
+                  <span className="info-icon" aria-hidden="true">📞</span>
+                  <div>
+                    <h3 className="info-label">Téléphone</h3>
+                    <p className="info-text">
+                      <a className="info-link" href="tel:+33299123456">02 99 12 34 56</a>
+                    </p>
+                  </div>
+                </div>
+              </article>
+
+              <article className="info-card card">
+                <div className="info-row">
+                  <span className="info-icon" aria-hidden="true">✉️</span>
+                  <div>
+                    <h3 className="info-label">E-mail</h3>
+                    <p className="info-text">
+                      <a className="info-link" href="mailto:contact@nokava.fr">contact@nokava.fr</a>
+                    </p>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          {/* RIGHT */}
+          <div className="infos-right">
+            <header className="infos-head">
+              <h2 className="infos-title">Nous Trouver</h2>
+              <div className="infos-line" />
+            </header>
+
+            <div className="map-card card">
+              <iframe
+                className="map-embed"
+                title="Google Maps - Café Nokava"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                src="https://www.google.com/maps?q=93%20Bd%20Voltaire%2035000%20Rennes&output=embed"
+              />
+            </div>
+
+            <div className="access-card card">
+              <ul className="access-list">
+                <li><span aria-hidden="true">🚇</span> <strong>Métro</strong> : Ligne A - Station Voltaire (2 min à pied)</li>
+                <li><span aria-hidden="true">🚌</span> <strong>Bus</strong> : Lignes 12, 15 - Arrêt Voltaire</li>
+                <li><span aria-hidden="true">🚗</span> <strong>Parking</strong> : Parking Voltaire (50m)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      
       {/* PHILOSOPHY */}
       <section className="section philosophy">
         <div className="container">
