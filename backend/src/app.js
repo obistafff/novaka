@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import reservationsRouter from "./routes/reservations.routes.js";
+import productsRouter from "./routes/products.routes.js";
 
 const app = express();
 
@@ -17,5 +18,6 @@ app.get("/api/health", (req, res) => {
 
 // Routes
 app.use("/api/reservations", reservationsRouter);
+app.use("/api/products", productsRouter);
 
 export default app;

@@ -1,6 +1,8 @@
 import Home from "../pages/Home";
 import Carte from "../pages/Carte";
 import Reservation from "../pages/Reservation";
+import Boutique from "../pages/Boutique";
+import Panier from "../pages/Panier";
 
 // Pages pas encore faites : placeholders temporaires
 function Placeholder({ title }) {
@@ -20,11 +22,13 @@ export const routes = [
   { path: "/", element: <Home /> },
   { path: "/carte", element: <Carte /> },
 
-  { path: "/boutique", element: <Placeholder title="Boutique" /> },
+  { path: "/boutique", element: <Boutique /> },
   { path: "/reservation", element: <Reservation /> },
+  { path: "/panier", element: <Panier /> },
+
   { path: "/login", element: <Placeholder title="Se connecter" /> },
-  { path: "/panier", element: <Placeholder title="Panier" /> },
 
   // 404
   { path: "*", element: <Placeholder title="Page introuvable" /> },
 ];
+
