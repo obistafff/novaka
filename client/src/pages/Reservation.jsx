@@ -1,7 +1,5 @@
 import { useState } from "react";
 
-const API_BASE = "http://localhost:4000";
-
 export default function Reservation() {
   const [form, setForm] = useState({
     name: "",
@@ -27,7 +25,7 @@ export default function Reservation() {
     setFieldErrors({});
 
     try {
-      const res = await fetch(`${API_BASE}/api/reservations`, {
+      const res = await fetch("/api/reservations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -45,25 +43,26 @@ export default function Reservation() {
             mapped[err.field] = err.message;
           }
           setFieldErrors(mapped);
-          setStatus({ type: "error", message: "Certains champs sont invalides." });
+          setStatus({
+            type: "error",
+            message: "Certains champs sont invalides.",
+          });
           return;
         }
 
         setStatus({
           type: "error",
-          message: data?.message || "Erreur serveur. Réessaie dans un instant.",
+          message: data?.message || "Erreur serveur. Réessaie plus tard.",
         });
         return;
       }
 
       setStatus({
         type: "success",
-        message: "Demande envoyée ✅ Nous te confirmons rapidement par e-mail.",
+        message: "Demande envoyée ✅ Nous te confirmerons rapidement par e-mail.",
       });
 
-      // Reset (optionnel)
-      setForm((f) => ({
-        ...f,
+      setForm({
         name: "",
         email: "",
         phone: "",
@@ -71,11 +70,12 @@ export default function Reservation() {
         time: "",
         guests: 2,
         message: "",
-      }));
+      });
     } catch (err) {
       setStatus({
         type: "error",
-        message: "Impossible de contacter le serveur. Vérifie que le backend est lancé.",
+        message:
+          "Impossible de contacter le serveur. Vérifie que le backend est lancé.",
       });
     }
   }
@@ -99,10 +99,10 @@ export default function Reservation() {
                     name="name"
                     value={form.name}
                     onChange={onChange}
-                    placeholder="Ton nom"
-                    autoComplete="name"
                   />
-                  {fieldErrors.name && <p className="field-error">{fieldErrors.name}</p>}
+                  {fieldErrors.name && (
+                    <p className="field-error">{fieldErrors.name}</p>
+                  )}
                 </div>
 
                 <div className="field">
@@ -112,10 +112,10 @@ export default function Reservation() {
                     name="email"
                     value={form.email}
                     onChange={onChange}
-                    placeholder="toi@exemple.com"
-                    autoComplete="email"
                   />
-                  {fieldErrors.email && <p className="field-error">{fieldErrors.email}</p>}
+                  {fieldErrors.email && (
+                    <p className="field-error">{fieldErrors.email}</p>
+                  )}
                 </div>
 
                 <div className="field">
@@ -125,10 +125,10 @@ export default function Reservation() {
                     name="phone"
                     value={form.phone}
                     onChange={onChange}
-                    placeholder="06 12 34 56 78"
-                    autoComplete="tel"
                   />
-                  {fieldErrors.phone && <p className="field-error">{fieldErrors.phone}</p>}
+                  {fieldErrors.phone && (
+                    <p className="field-error">{fieldErrors.phone}</p>
+                  )}
                 </div>
 
                 <div className="field">
@@ -142,7 +142,9 @@ export default function Reservation() {
                     value={form.guests}
                     onChange={onChange}
                   />
-                  {fieldErrors.guests && <p className="field-error">{fieldErrors.guests}</p>}
+                  {fieldErrors.guests && (
+                    <p className="field-error">{fieldErrors.guests}</p>
+                  )}
                 </div>
 
                 <div className="field">
@@ -155,7 +157,9 @@ export default function Reservation() {
                     onChange={onChange}
                   />
                   {fieldErrors["date/time"] && (
-                    <p className="field-error">{fieldErrors["date/time"]}</p>
+                    <p className="field-error">
+                      {fieldErrors["date/time"]}
+                    </p>
                   )}
                 </div>
 
@@ -179,27 +183,28 @@ export default function Reservation() {
                   rows="4"
                   value={form.message}
                   onChange={onChange}
-                  placeholder="Allergies, préférence de table, etc."
                 />
-                {fieldErrors.message && <p className="field-error">{fieldErrors.message}</p>}
+                {fieldErrors.message && (
+                  <p className="field-error">{fieldErrors.message}</p>
+                )}
               </div>
 
               <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
-                <button className="btn btn-primary" disabled={status.type === "loading"}>
-                  {status.type === "loading" ? "Envoi..." : "Envoyer la demande"}
+                <button
+                  className="btn btn-primary"
+                  disabled={status.type === "loading"}
+                >
+                  {status.type === "loading"
+                    ? "Envoi..."
+                    : "Envoyer la demande"}
                 </button>
-                <a className="btn btn-secondary" href="#carte">Voir la carte</a>
+                <a className="btn btn-secondary" href="/carte">
+                  Voir la carte
+                </a>
               </div>
 
               {status.type !== "idle" && (
-                <div
-                  className="card"
-                  style={{
-                    marginTop: 16,
-                    padding: 14,
-                    border: "1px solid rgba(255,255,255,0.08)",
-                  }}
-                >
+                <div className="card" style={{ marginTop: 16, padding: 14 }}>
                   <p style={{ margin: 0 }}>{status.message}</p>
                 </div>
               )}
@@ -207,7 +212,7 @@ export default function Reservation() {
           </div>
 
           <p style={{ marginTop: 14, color: "var(--color-muted)" }}>
-            Astuce : assure-toi que le backend est lancé sur <code>localhost:4000</code>.
+            Astuce : le frontend appelle l’API via <code>/api</code> (proxy Vite).
           </p>
         </div>
       </section>
