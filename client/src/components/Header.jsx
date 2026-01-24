@@ -1,6 +1,9 @@
 import { Link, NavLink } from "react-router-dom";
+import { useCartCount } from "../hooks/useCartCount.js";
 
 export default function Header() {
+  const count = useCartCount();
+
   return (
     <header className="site-header">
       <div className="container header-inner">
@@ -61,6 +64,7 @@ export default function Header() {
             }
           >
             panier
+            {count > 0 && <span className="badge">{count}</span>}
           </NavLink>
         </div>
       </div>
