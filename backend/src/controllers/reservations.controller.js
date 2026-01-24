@@ -1,3 +1,5 @@
+import { prisma } from "../db/prisma.js";
+
 function isValidEmail(email) {
   return typeof email === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
@@ -61,17 +63,26 @@ function validateReservation(payload) {
 
   const dt = combineDateTime(date, time);
   if (!dt) {
-    errors.push({ field: "date/time", message: "Date (YYYY-MM-DD) and time (HH:MM) are required." });
+    errors.push({
+      field: "date/time",
+      message: "Date (YYYY-MM-DD) and time (HH:MM) are required.",
+    });
   } else {
     const now = new Date();
     if (dt.getTime() < now.getTime() + 10 * 60 * 1000) {
-      errors.push({ field: "date/time", message: "Reservation must be at least 10 minutes in the future." });
+      errors.push({
+        field: "date/time",
+        message: "Reservation must be at least 10 minutes in the future.",
+      });
     }
   }
 
   const guestsNum = Number(guests);
   if (!Number.isInteger(guestsNum) || guestsNum < 1 || guestsNum > 12) {
-    errors.push({ field: "guests", message: "Guests must be an integer between 1 and 12." });
+    errors.push({
+      field: "guests",
+      message: "Guests must be an integer between 1 and 12.",
+    });
   }
 
   if (typeof message !== "string") {
@@ -88,7 +99,7 @@ function validateReservation(payload) {
       date,
       time,
       guests: guestsNum,
-      message: message.trim(),
+      message: typeof message === "string" ? message.trim() : "",
       requestedAt: new Date().toISOString(),
     },
   };
@@ -105,16 +116,53 @@ export async function createReservation(req, res) {
     });
   }
 
-  // Pour l’instant: pas de DB -> on simule un id
-  const reservation = {
-    id: `res_${Date.now()}`,
-    status: "pending",
-    ...normalized,
-  };
+  try {
+    const reservation = await prisma.reservation.create({
+      data: {
+        name: normalized.name,
+        email: normalized.email,
+        phone: normalized.phone || null,
+        date: normalized.date,
+        time: normalized.time,
+        guests: normalized.guests,
+        message: normalized.message || null,
+        status: "pending",
+        requestedAt: new Date(normalized.requestedAt),
+      },
+    });
 
-  return res.status(201).json({
-    ok: true,
-    reservation,
-    message: "Reservation request received.",
-  });
+    return res.status(201).json({
+      ok: true,
+      reservation,
+      message: "Reservation request received.",
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: "INTERNAL_ERROR",
+      message: "Failed to create reservation.",
+    });
+  }
+}
+
+export async function getReservations(req, res) {
+  try {
+    const reservations = await prisma.reservation.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 50,
+    });
+
+    return res.status(200).json({
+      ok: true,
+      reservations,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: "INTERNAL_ERROR",
+      message: "Failed to fetch reservations.",
+    });
+  }
 }
