@@ -1,5 +1,6 @@
 import Home from "../pages/Home";
 import Carte from "../pages/Carte";
+import Reservation from "../pages/Reservation";
 
 // Pages pas encore faites : placeholders temporaires
 function Placeholder({ title }) {
@@ -20,7 +21,7 @@ export const routes = [
   { path: "/carte", element: <Carte /> },
 
   { path: "/boutique", element: <Placeholder title="Boutique" /> },
-  { path: "/reservation", element: <Placeholder title="Réservations" /> },
+  { path: "/reservation", element: <Reservation /> },
   { path: "/login", element: <Placeholder title="Se connecter" /> },
   { path: "/panier", element: <Placeholder title="Panier" /> },
 
