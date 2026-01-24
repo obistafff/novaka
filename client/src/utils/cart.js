@@ -9,9 +9,12 @@ export function readCart() {
   }
 }
 
-export function writeCart(cart) {
-  localStorage.setItem(KEY, JSON.stringify(cart));
+export function clearCart() {
+  const cart = { items: [] };
+  writeCart(cart);
+  return cart;
 }
+
 
 export function addToCart(product, qty = 1) {
   const cart = readCart();
