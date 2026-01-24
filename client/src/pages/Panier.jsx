@@ -1,81 +1,172 @@
 import { useEffect, useState } from "react";
-import { readCart, setQty, removeFromCart, cartTotalCents } from "../utils/cart.js";
-import { clearCart } from "../utils/cart.js";
+import {
+  readCart,
+  setQty,
+  removeFromCart,
+  cartTotalCents,
+  clearCart,
+} from "../utils/cart.js";
 
+function euro(cents) {
+  return (cents / 100).toFixed(2) + " €";
+}
 
 export default function Panier() {
   const [cart, setCart] = useState(readCart());
 
-  useEffect(() => {
-    const onStorage = () => setCart(readCart());
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
-  }, []);
+  // Checkout state machine
+  const [checkout, setCheckout] = useState({
+    status: "idle", // idle | loading | success | error
+    message: "",
+    orderId: "",
+  });
 
-  function euro(cents) {
-    return (cents / 100).toFixed(2).replace(".", ",") + " €";
-  }
+  // Optional email for order
+  const [email, setEmail] = useState("");
+
+  // Sync cart updates (badge, other tabs, etc.)
+  useEffect(() => {
+    function onUpdate() {
+      setCart(readCart());
+    }
+    window.addEventListener("cart:updated", onUpdate);
+    return () => window.removeEventListener("cart:updated", onUpdate);
+  }, []);
 
   const total = cartTotalCents(cart);
 
+  async function onCheckout() {
+    if (cart.items.length === 0) return;
+
+    setCheckout({
+      status: "loading",
+      message: "Sending order...",
+      orderId: "",
+    });
+
+    try {
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email.trim() || null,
+          items: cart.items,
+        }),
+      });
+
+      const data = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        setCheckout({
+          status: "error",
+          message: data?.message || "Server error. Please try again.",
+          orderId: "",
+        });
+        return;
+      }
+
+      // Success → clear cart and show confirmation
+      setCart(clearCart());
+      setCheckout({
+        status: "success",
+        message: "Order successfully created ✅",
+        orderId: data?.order?.id || "",
+      });
+    } catch (err) {
+      setCheckout({
+        status: "error",
+        message: "Unable to reach the server. Is the backend running?",
+        orderId: "",
+      });
+    }
+  }
+
   return (
-    <main>
-      <section className="section">
-        <div className="container">
-          <header className="section-head">
-            <h1 className="section-title">Panier</h1>
-            <div className="section-line" />
-          </header>
+    <main className="section">
+      <div className="container">
+        <h1>Cart</h1>
 
-          {cart.items.length === 0 ? (
-            <p style={{ color: "var(--color-muted)" }}>Ton panier est vide.</p>
-          ) : (
-            <div className="card" style={{ padding: 16, display: "grid", gap: 12 }}>
-              {cart.items.map((it) => (
-                <div key={it.productId} style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
-                  <div style={{ minWidth: 0 }}>
-                    <strong>{it.snapshot?.name ?? "Produit"}</strong>
-                    <div style={{ color: "var(--color-muted)", marginTop: 4 }}>
-                      {(it.snapshot?.priceCents ?? 0) / 100}€ × {it.qty}
-                    </div>
-                  </div>
+        {cart.items.length === 0 && checkout.status !== "success" && (
+          <p className="muted">Your cart is empty.</p>
+        )}
 
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <input
-                      type="number"
-                      min="1"
-                      value={it.qty}
-                      onChange={(e) => setCart(setQty(it.productId, Number(e.target.value)))}
-                      style={{ width: 72 }}
-                    />
-                    <button className="btn btn-secondary" onClick={() => setCart(removeFromCart(it.productId))}>
-                      Retirer
-                    </button>
+        {cart.items.map((item) => (
+          <div key={item.productId} className="card" style={{ marginBottom: 12 }}>
+            <strong>{item.snapshot.name}</strong>
 
-                    <button className="btn btn-secondary" onClick={() => setCart(clearCart())}>
-                     Vider le panier
-                    </button>
-                  </div>
-                </div>
-              ))}
+            <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+              <input
+                type="number"
+                min="1"
+                value={item.qty}
+                onChange={(e) =>
+                  setCart(setQty(item.productId, Number(e.target.value)))
+                }
+              />
 
-              <hr style={{ opacity: 0.15, width: "100%" }} />
-
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <strong>Total</strong>
-                <strong>{euro(total)}</strong>
-              </div>
-
-              <button className="btn btn-primary" disabled>
-                Commander (mock)
+              <button
+                className="btn btn-secondary"
+                onClick={() => setCart(removeFromCart(item.productId))}
+              >
+                Remove
               </button>
-              <p style={{ margin: 0, color: "var(--color-muted)" }}>
-                Paiement / commande: on simulera plus tard (objectif: mini e-commerce).
-              </p>
             </div>
-          )}
-        </div>
-      </section>
+
+            <div className="muted" style={{ marginTop: 6 }}>
+              {euro(item.snapshot.priceCents)} × {item.qty}
+            </div>
+          </div>
+        ))}
+
+        {cart.items.length > 0 && (
+          <>
+            <hr style={{ opacity: 0.2 }} />
+
+            {/* Optional email */}
+            <div className="field">
+              <label htmlFor="email">Email (optional)</label>
+              <input
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                autoComplete="email"
+              />
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "space-between", marginTop: 12 }}>
+              <strong>Total</strong>
+              <strong>{euro(total)}</strong>
+            </div>
+
+            <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
+              <button
+                className="btn btn-primary"
+                onClick={onCheckout}
+                disabled={checkout.status === "loading"}
+              >
+                {checkout.status === "loading" ? "Sending..." : "Checkout (mock)"}
+              </button>
+
+              <button
+                className="btn btn-secondary"
+                onClick={() => setCart(clearCart())}
+              >
+                Clear cart
+              </button>
+            </div>
+          </>
+        )}
+
+        {checkout.status !== "idle" && (
+          <div className="card" style={{ marginTop: 16 }}>
+            <p>{checkout.message}</p>
+            {checkout.orderId && (
+              <p className="muted">Order ID: {checkout.orderId}</p>
+            )}
+          </div>
+        )}
+      </div>
     </main>
   );
 }
