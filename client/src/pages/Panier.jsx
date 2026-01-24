@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { readCart, setQty, removeFromCart, cartTotalCents } from "../utils/cart.js";
+import { clearCart } from "../utils/cart.js";
+
 
 export default function Panier() {
   const [cart, setCart] = useState(readCart());
@@ -48,6 +50,10 @@ export default function Panier() {
                     />
                     <button className="btn btn-secondary" onClick={() => setCart(removeFromCart(it.productId))}>
                       Retirer
+                    </button>
+
+                    <button className="btn btn-secondary" onClick={() => setCart(clearCart())}>
+                     Vider le panier
                     </button>
                   </div>
                 </div>
