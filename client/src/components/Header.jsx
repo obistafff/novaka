@@ -1,72 +1,80 @@
 import { Link, NavLink } from "react-router-dom";
-import { useCartCount } from "../hooks/useCartCount.js";
+import { useState } from "react";
+
+function NavItem({ to, children, end = false }) {
+  return (
+    <NavLink
+      to={to}
+      end={end}
+      className={({ isActive }) =>
+        `nav-link${isActive ? " active" : ""}`
+      }
+    >
+      {children}
+    </NavLink>
+  );
+}
 
 export default function Header() {
-  const count = useCartCount();
+  const [open, setOpen] = useState(false);
+
+  // ✅ Header "safe": pas de hook panier ici.
+  // Tu pourras rebrancher un count plus tard via props ou context quand tout sera prêt.
+  const cartCount = 0;
 
   return (
     <header className="site-header">
       <div className="container header-inner">
-        {/* Left: logo */}
-        <Link className="brand" to="/">
-          <img
-            className="brand-logo"
-            src="/img/logo.png"
-            alt="Café Nokava"
-          />
+        {/* Brand */}
+        <Link className="brand" to="/" onClick={() => setOpen(false)}>
+          <span className="brand-mark" aria-hidden="true">☕</span>
+          <span className="brand-text">Nokava</span>
         </Link>
 
-        {/* Center: nav */}
-        <nav className="nav">
-          <NavLink
-            to="/"
-            className={({ isActive }) =>
-              `nav-link${isActive ? " active" : ""}`
-            }
-          >
-            accueil
-          </NavLink>
+        {/* Burger (mobile) */}
+        <button
+          type="button"
+          className="nav-toggle"
+          aria-label="Toggle navigation"
+          aria-expanded={open}
+          onClick={() => setOpen((v) => !v)}
+        >
+          ☰
+        </button>
 
-          <NavLink
-            to="/carte"
-            className={({ isActive }) =>
-              `nav-link${isActive ? " active" : ""}`
-            }
-          >
-            carte
-          </NavLink>
+        {/* Nav */}
+        <nav className={`nav ${open ? "open" : ""}`}>
+          <div className="nav-left">
+            <NavItem to="/" end>Accueil</NavItem>
+            <NavItem to="/carte">Carte</NavItem>
+            <NavItem to="/boutique">Boutique</NavItem>
+          </div>
 
-          <NavLink
-            to="/boutique"
-            className={({ isActive }) =>
-              `nav-link${isActive ? " active" : ""}`
-            }
-          >
-            boutique
-          </NavLink>
+          <div className="nav-right">
+            <NavItem to="/login">Se connecter</NavItem>
+
+            <NavLink
+              to="/panier"
+              className={({ isActive }) =>
+                `nav-link${isActive ? " active" : ""}`
+              }
+              onClick={() => setOpen(false)}
+            >
+              Panier
+              {cartCount > 0 && <span className="badge">{cartCount}</span>}
+            </NavLink>
+
+            <NavLink
+              to="/admin/orders"
+              className={({ isActive }) =>
+                `nav-link nav-link--admin${isActive ? " active" : ""}`
+              }
+              onClick={() => setOpen(false)}
+            >
+              Admin
+            </NavLink>
+          </div>
         </nav>
-
-        {/* Right: actions */}
-        <div className="header-actions">
-          <NavLink
-            to="/login"
-            className={({ isActive }) =>
-              `nav-link${isActive ? " active" : ""}`
-            }
-          >
-            se connecter
-          </NavLink>
-
-          <NavLink
-            to="/panier"
-            className={({ isActive }) =>
-              `nav-link${isActive ? " active" : ""}`
-            }
-          >
-            panier
-            {count > 0 && <span className="badge">{count}</span>}
-          </NavLink>
-        </div>
       </div>
     </header>
   );
