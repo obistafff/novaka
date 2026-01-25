@@ -1,36 +1,51 @@
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
-export async function apiGet(path) {
-  const res = await fetch(`${API_URL}${path}`, {
-    headers: { Accept: "application/json" },
+let csrfToken = null;
+
+// 1️⃣ récupérer le CSRF
+export async function apiCsrf() {
+  const res = await fetch(`${API_URL}/api/auth/csrf`, {
+    method: "GET",
+    credentials: "include", // cookies
   });
 
-  const data = await res.json().catch(() => null);
+  if (!res.ok) throw new Error("CSRF fetch failed");
 
-  if (!res.ok) {
-    const msg = data?.message || `HTTP ${res.status}`;
-    throw new Error(msg);
-  }
+  const token = res.headers.get("X-CSRF-Token");
+  if (!token) throw new Error("CSRF token not found");
 
-  return data;
+  csrfToken = token;
+  return token;
 }
 
-export async function apiPatch(path, body) {
+// 2️⃣ fetch générique
+async function apiFetch(path, { method = "GET", body } = {}) {
+  if (["POST", "PATCH", "DELETE"].includes(method) && !csrfToken) {
+    await apiCsrf();
+  }
+
   const res = await fetch(`${API_URL}${path}`, {
-    method: "PATCH",
+    method,
+    credentials: "include",
     headers: {
-      "Content-Type": "application/json",
       Accept: "application/json",
+      ...(body && { "Content-Type": "application/json" }),
+      ...(csrfToken && { "X-CSRF-Token": csrfToken }),
     },
-    body: JSON.stringify(body),
+    body: body ? JSON.stringify(body) : undefined,
   });
 
   const data = await res.json().catch(() => null);
 
   if (!res.ok) {
-    const msg = data?.message || `HTTP ${res.status}`;
-    throw new Error(msg);
+    throw new Error(data?.error || `HTTP ${res.status}`);
   }
 
   return data;
 }
+
+// 3️⃣ helpers
+export const apiGet = (path) => apiFetch(path);
+export const apiPost = (path, body) => apiFetch(path, { method: "POST", body });
+export const apiPatch = (path, body) => apiFetch(path, { method: "PATCH", body });
+export const apiDelete = (path) => apiFetch(path, { method: "DELETE" });
