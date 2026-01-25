@@ -22,6 +22,21 @@ export default function Boutique() {
     return (priceCents / 100).toFixed(2).replace(".", ",") + " €";
   }
 
+  function handleAdd(p) {
+    // ✅ Cart item format expected by Panier + backend createOrder
+    addToCart({
+      productId: String(p.id),
+      qty: 1,
+      snapshot: {
+        name: p.name,
+        priceCents: p.priceCents,
+      },
+    });
+
+    // optionnel: petit feedback rapide
+    window.dispatchEvent(new Event("cart:updated"));
+  }
+
   return (
     <main>
       <section className="section">
@@ -31,28 +46,56 @@ export default function Boutique() {
             <div className="section-line" />
           </header>
 
-          {status === "loading" && <p style={{ color: "var(--color-muted)" }}>Chargement…</p>}
-          {status === "error" && <p style={{ color: "var(--color-muted)" }}>Erreur: API indisponible.</p>}
+          {status === "loading" && (
+            <p style={{ color: "var(--color-muted)" }}>Chargement…</p>
+          )}
+          {status === "error" && (
+            <p style={{ color: "var(--color-muted)" }}>
+              Erreur: API indisponible.
+            </p>
+          )}
 
           <div className="grid-3">
             {products.map((p) => (
-              <article key={p.id} className="card" style={{ padding: 16, display: "grid", gap: 10 }}>
+              <article
+                key={p.id}
+                className="card"
+                style={{ padding: 16, display: "grid", gap: 10 }}
+              >
                 {p.imageUrl && (
                   <img
                     src={p.imageUrl}
                     alt={p.name}
-                    style={{ width: "100%", height: 160, objectFit: "cover", borderRadius: 12 }}
+                    style={{
+                      width: "100%",
+                      height: 160,
+                      objectFit: "cover",
+                      borderRadius: 12,
+                    }}
                   />
                 )}
+
                 <div>
                   <h3 style={{ margin: 0 }}>{p.name}</h3>
-                  {p.description && <p style={{ marginTop: 6, color: "var(--color-muted)" }}>{p.description}</p>}
+                  {p.description && (
+                    <p style={{ marginTop: 6, color: "var(--color-muted)" }}>
+                      {p.description}
+                    </p>
+                  )}
                 </div>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 12,
+                  }}
+                >
                   <strong>{euro(p.priceCents)}</strong>
                   <button
                     className="btn btn-primary"
-                    onClick={() => addToCart(p, 1)}
+                    onClick={() => handleAdd(p)}
                   >
                     Ajouter
                   </button>
