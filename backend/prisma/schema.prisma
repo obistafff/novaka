@@ -5,7 +5,8 @@ generator client {
 
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
+  // plus de url ici en Prisma v7
 }
 
 model Reservation {
