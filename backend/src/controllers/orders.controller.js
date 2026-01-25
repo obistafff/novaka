@@ -122,3 +122,50 @@ export async function listOrders(req, res) {
     orders,
   });
 }
+
+/**
+ * Update order status (admin).
+ * PATCH /api/orders/:id
+ */
+export async function updateOrderStatus(req, res) {
+  const { id } = req.params;
+  const { status } = req.body ?? {};
+
+  if (!["confirmed", "cancelled"].includes(status)) {
+    return res.status(400).json({
+      ok: false,
+      error: "VALIDATION_ERROR",
+      message: "Invalid status.",
+    });
+  }
+
+  const order = await prisma.order.findUnique({
+    where: { id },
+  });
+
+  if (!order) {
+    return res.status(404).json({
+      ok: false,
+      error: "NOT_FOUND",
+      message: "Order not found.",
+    });
+  }
+
+  if (order.status !== "created") {
+    return res.status(400).json({
+      ok: false,
+      error: "INVALID_TRANSITION",
+      message: "Order status cannot be changed.",
+    });
+  }
+
+  const updated = await prisma.order.update({
+    where: { id },
+    data: { status },
+  });
+
+  return res.json({
+    ok: true,
+    order: updated,
+  });
+}
