@@ -11,5 +11,49 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
 
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpass
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  mongo-express:
+    image: mongo-express:1
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: rootpass
+      ME_CONFIG_MONGODB_SERVER: mongo
+    ports:
+      - "8081:8081"
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    command: npm run dev
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    ports:
+      - "4000:4000"
+    environment:
+      DATABASE_URL: "postgresql://novaka:novaka@postgres:5432/novaka?schema=public"
+      MONGODB_URI: "mongodb://novaka_app_admin:novaka_app_admin_pass@mongo:27017/admin?authSource=admin&directConnection=true"
+      SESSION_COOKIE_NAME: "novaka_sid"
+      SESSION_TTL_DAYS: "14"
+      PASSWORD_PEPPER: "change-me"
+      CSRF_SECRET: "change-me-too"
+    depends_on:
+      - postgres
+      - mongo
+
 volumes:
   pg_data:
+  mongo_data:
