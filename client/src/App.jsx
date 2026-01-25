@@ -1,37 +1,13 @@
-import { NavLink, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
+import Header from "./components/Header.jsx";
+
 import Home from "./pages/Home.jsx";
 import AdminOrders from "./pages/AdminOrders.jsx";
 
 function Layout({ children }) {
   return (
     <div className="app">
-      <header className="container" style={{ padding: "16px 0" }}>
-        <nav style={{ display: "flex", gap: 12, alignItems: "center" }}>
-          <NavLink
-            to="/"
-            end
-            style={({ isActive }) => ({
-              textDecoration: "none",
-              color: "inherit",
-              fontWeight: isActive ? 700 : 500,
-            })}
-          >
-            Nokava
-          </NavLink>
-
-          <NavLink
-            to="/admin/orders"
-            style={({ isActive }) => ({
-              textDecoration: "none",
-              color: "inherit",
-              opacity: isActive ? 1 : 0.8,
-              fontWeight: isActive ? 700 : 500,
-            })}
-          >
-            Admin · Orders
-          </NavLink>
-        </nav>
-      </header>
+      <Header />
 
       {children}
 
@@ -53,6 +29,7 @@ export default function App() {
           </Layout>
         }
       />
+
       <Route
         path="/admin/orders"
         element={
@@ -61,6 +38,7 @@ export default function App() {
           </Layout>
         }
       />
+
       <Route
         path="*"
         element={
