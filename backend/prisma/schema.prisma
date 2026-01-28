@@ -6,7 +6,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  // plus de url ici en Prisma v7
 }
 
 model Reservation {

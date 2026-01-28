@@ -6,10 +6,10 @@ import cookieParser from "cookie-parser";
 import { helmetMw } from "./middlewares/security.js";
 import { ensureAuthIndexes } from "./auth/auth.repo.js";
 
-// Routes existantes
+// Routes (Prisma / Postgres)
 import ordersRoutes from "./routes/orders.routes.js";
-// ⚠️ ajoute ici les autres routes existantes si tu en as
-// import productsRoutes from "./routes/products.routes.js";
+import productsRoutes from "./routes/products.routes.js";
+import reservationsRoutes from "./routes/reservations.routes.js";
 
 // Auth routes (Mongo)
 import authRoutes from "./routes/auth.routes.js";
@@ -37,17 +37,15 @@ app.use(cookieParser());
 /* Routes                    */
 /* ------------------------- */
 
-// Healthcheck
-app.get("/api/health", (req, res) => {
-  res.json({ ok: true });
-});
+app.get("/api/health", (req, res) => res.json({ ok: true }));
 
 // Auth (Mongo sessions)
 app.use("/api/auth", authRoutes);
 
-// Business routes (Prisma / Postgres)
+// Business (Prisma/Postgres)
+app.use("/api/products", productsRoutes);
 app.use("/api/orders", ordersRoutes);
-// app.use("/api/products", productsRoutes);
+app.use("/api/reservations", reservationsRoutes);
 
 /* ------------------------- */
 /* Startup                   */

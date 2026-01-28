@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { apiGet, apiPatch } from "../lib/api.js";
 
 function formatEuros(cents) {
@@ -55,11 +55,9 @@ export default function AdminOrders() {
     try {
       await apiPatch(`/api/orders/${id}`, { status });
 
-      // Mise à jour locale (optimistic UI)
+      // Optimistic UI update
       setOrders((prev) =>
-        prev.map((o) =>
-          o.id === id ? { ...o, status } : o
-        )
+        prev.map((o) => (o.id === id ? { ...o, status } : o))
       );
     } catch (e) {
       alert(e.message);
@@ -121,9 +119,8 @@ export default function AdminOrders() {
                   const isOpen = openId === o.id;
 
                   return (
-                    <>
+                    <Fragment key={o.id}>
                       <tr
-                        key={o.id}
                         style={{
                           borderBottom:
                             "1px solid rgba(255,255,255,0.08)",
@@ -193,7 +190,7 @@ export default function AdminOrders() {
                       </tr>
 
                       {isOpen && (
-                        <tr key={`${o.id}-details`}>
+                        <tr>
                           <td
                             colSpan={6}
                             style={{
@@ -221,9 +218,7 @@ export default function AdminOrders() {
                                   {o.items.map((it) => (
                                     <li key={it.id}>
                                       {it.name} — x{it.qty} —{" "}
-                                      {formatEuros(
-                                        it.priceCents
-                                      )}
+                                      {formatEuros(it.priceCents)}
                                     </li>
                                   ))}
                                 </ul>
@@ -242,7 +237,7 @@ export default function AdminOrders() {
                           </td>
                         </tr>
                       )}
-                    </>
+                    </Fragment>
                   );
                 })}
               </tbody>

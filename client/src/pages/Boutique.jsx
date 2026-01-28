@@ -1,21 +1,30 @@
 import { useEffect, useState } from "react";
 import { addToCart } from "../utils/cart.js";
+import { apiGet } from "../lib/api.js";
 
 export default function Boutique() {
   const [products, setProducts] = useState([]);
   const [status, setStatus] = useState("loading");
 
   useEffect(() => {
+    let cancelled = false;
+
     (async () => {
       try {
-        const res = await fetch("/api/products");
-        const data = await res.json();
-        setProducts(data.products ?? []);
+        setStatus("loading");
+        const data = await apiGet("/api/products");
+        if (cancelled) return;
+        setProducts(data?.products ?? []);
         setStatus("idle");
       } catch {
+        if (cancelled) return;
         setStatus("error");
       }
     })();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   function euro(priceCents) {
@@ -23,17 +32,12 @@ export default function Boutique() {
   }
 
   function handleAdd(p) {
-    // ✅ Cart item format expected by Panier + backend createOrder
     addToCart({
       productId: String(p.id),
       qty: 1,
-      snapshot: {
-        name: p.name,
-        priceCents: p.priceCents,
-      },
+      snapshot: { name: p.name, priceCents: p.priceCents },
     });
 
-    // optionnel: petit feedback rapide
     window.dispatchEvent(new Event("cart:updated"));
   }
 
@@ -93,10 +97,7 @@ export default function Boutique() {
                   }}
                 >
                   <strong>{euro(p.priceCents)}</strong>
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => handleAdd(p)}
-                  >
+                  <button className="btn btn-primary" onClick={() => handleAdd(p)}>
                     Ajouter
                   </button>
                 </div>
