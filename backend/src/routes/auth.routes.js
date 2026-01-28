@@ -68,12 +68,15 @@ router.post("/login", loginLimiter, csrfProtect, async (req, res) => {
 
   const cookieName = process.env.SESSION_COOKIE_NAME || "novaka_sid";
 
+  const isProd = process.env.NODE_ENV === "production";
+
   res.cookie(cookieName, session.sid, {
     httpOnly: true,
     sameSite: "lax",
-    secure: false, // true in prod (https)
+    secure: isProd,
     path: "/",
   });
+
 
   return res.json({ ok: true, user: { id: String(user._id), email: user.email } });
 });
@@ -84,7 +87,15 @@ router.post("/logout", csrfProtect, async (req, res) => {
   const sid = req.cookies?.[cookieName];
   if (sid) await deleteSession(sid);
 
-  res.clearCookie(cookieName, { path: "/" });
+  const isProd = process.env.NODE_ENV === "production";
+
+res.clearCookie(cookieName, {
+  httpOnly: true,
+  sameSite: "lax",
+  secure: isProd,
+  path: "/",
+});
+
   return res.json({ ok: true });
 });
 
