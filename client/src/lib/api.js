@@ -20,7 +20,8 @@ export async function apiCsrf() {
 
 // 2️⃣ fetch générique
 async function apiFetch(path, { method = "GET", body } = {}) {
-  if (["POST", "PATCH", "DELETE"].includes(method) && !csrfToken) {
+  // Ensure CSRF for non-GET methods
+  if (["POST", "PUT", "PATCH", "DELETE"].includes(method) && !csrfToken) {
     await apiCsrf();
   }
 
@@ -30,10 +31,14 @@ async function apiFetch(path, { method = "GET", body } = {}) {
     headers: {
       Accept: "application/json",
       ...(body && { "Content-Type": "application/json" }),
-      ...(csrfToken && { "X-CSRF-Token": csrfToken }),
+      ...(csrfToken && method !== "GET" && { "X-CSRF-Token": csrfToken }),
     },
     body: body ? JSON.stringify(body) : undefined,
   });
+
+  // Refresh CSRF token if backend sends a new one
+  const newToken = res.headers.get("X-CSRF-Token");
+  if (newToken) csrfToken = newToken;
 
   const data = await res.json().catch(() => null);
 
@@ -47,5 +52,6 @@ async function apiFetch(path, { method = "GET", body } = {}) {
 // 3️⃣ helpers
 export const apiGet = (path) => apiFetch(path);
 export const apiPost = (path, body) => apiFetch(path, { method: "POST", body });
+export const apiPut = (path, body) => apiFetch(path, { method: "PUT", body });
 export const apiPatch = (path, body) => apiFetch(path, { method: "PATCH", body });
-export const apiDelete = (path) => apiFetch(path, { method: "DELETE" });
+export const apiDelete = (path, body) => apiFetch(path, { method: "DELETE", body });
