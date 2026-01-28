@@ -5,3 +5,4 @@ node_modules
 /src/generated/prisma
 cookies.txt
 cookies.txt
+node_modules/
