@@ -1,8 +1,4 @@
-node_modules
-# Keep environment variables out of version control
-.env
-
-/src/generated/prisma
-cookies.txt
-cookies.txt
 node_modules/
+.env
+cookies.txt
+/src/generated/prisma
