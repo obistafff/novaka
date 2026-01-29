@@ -1,79 +1,78 @@
-import { Link, NavLink } from "react-router-dom";
-import { useState } from "react";
-
-function NavItem({ to, children, end = false }) {
-  return (
-    <NavLink
-      to={to}
-      end={end}
-      className={({ isActive }) =>
-        `nav-link${isActive ? " active" : ""}`
-      }
-    >
-      {children}
-    </NavLink>
-  );
-}
+import { Link } from "react-router-dom";
+import { useAuth } from "../auth/AuthContext.jsx";
+import { useEffect, useState } from "react";
+import { cartCount, CART_UPDATED_EVENT } from "../lib/cartStorage.js";
 
 export default function Header() {
-  const [open, setOpen] = useState(false);
+  const { user } = useAuth();
+  const [count, setCount] = useState(cartCount());
 
-  // ✅ Header "safe": pas de hook panier ici.
-  // Tu pourras rebrancher un count plus tard via props ou context quand tout sera prêt.
-  const cartCount = 0;
+  useEffect(() => {
+    function syncCart() {
+      setCount(cartCount());
+    }
+
+    // autres onglets
+    window.addEventListener("storage", syncCart);
+    // même onglet
+    window.addEventListener(CART_UPDATED_EVENT, syncCart);
+
+    return () => {
+      window.removeEventListener("storage", syncCart);
+      window.removeEventListener(CART_UPDATED_EVENT, syncCart);
+    };
+  }, []);
 
   return (
-    <header className="site-header">
-      <div className="container header-inner">
-        {/* Brand */}
-        <Link className="brand" to="/" onClick={() => setOpen(false)}>
-          <span className="brand-mark" aria-hidden="true">☕</span>
-          <span className="brand-text">Nokava</span>
-        </Link>
+    <header style={{ borderBottom: "1px solid #eee" }}>
+      <div
+        className="container"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "16px 0",
+        }}
+      >
+        {/* Left: main nav */}
+        <nav style={{ display: "flex", gap: 16, alignItems: "center" }}>
+          <Link to="/">NovaKa</Link>
+          <Link to="/carte">Carte</Link>
+          <Link to="/boutique">Boutique</Link>
+          <Link to="/reservation">Réservation</Link>
+        </nav>
 
-        {/* Burger (mobile) */}
-        <button
-          type="button"
-          className="nav-toggle"
-          aria-label="Toggle navigation"
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-        >
-          ☰
-        </button>
+        {/* Right: cart + auth */}
+        <nav style={{ display: "flex", gap: 16, alignItems: "center" }}>
+          <Link to="/panier" style={{ position: "relative" }}>
+            Panier
+            {count > 0 && (
+              <span
+                style={{
+                  position: "absolute",
+                  top: -6,
+                  right: -10,
+                  background: "crimson",
+                  color: "white",
+                  borderRadius: "999px",
+                  padding: "2px 6px",
+                  fontSize: 12,
+                  lineHeight: 1,
+                }}
+              >
+                {count}
+              </span>
+            )}
+          </Link>
 
-        {/* Nav */}
-        <nav className={`nav ${open ? "open" : ""}`}>
-          <div className="nav-left">
-            <NavItem to="/" end>Accueil</NavItem>
-            <NavItem to="/carte">Carte</NavItem>
-            <NavItem to="/boutique">Boutique</NavItem>
-          </div>
+          {!user && <Link to="/login">Se connecter</Link>}
 
-          <div className="nav-right">
-            <NavItem to="/login">Se connecter</NavItem>
-
-            <NavLink
-              to="/panier"
-              className={({ isActive }) =>
-                `nav-link${isActive ? " active" : ""}`
-              }
-              onClick={() => setOpen(false)}
-            >
-              Panier
-              {cartCount > 0 && <span className="badge">{cartCount}</span>}
-            </NavLink>
-
-            <NavLink
-              to="/admin/orders"
-              className={({ isActive }) =>
-                `nav-link nav-link--admin${isActive ? " active" : ""}`
-              }
-              onClick={() => setOpen(false)}
-            >
-              Admin
-            </NavLink>
-          </div>
+          {user && (
+            <>
+              {user.role === "admin" && <Link to="/admin/orders">Admin</Link>}
+              <Link to="/account">Mon compte</Link>
+            </>
+          )}
         </nav>
       </div>
     </header>

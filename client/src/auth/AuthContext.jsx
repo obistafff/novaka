@@ -22,9 +22,12 @@ export function AuthProvider({ children }) {
 
   async function login(email, password) {
     await apiCsrf();
-    const data = await apiPost("/api/auth/login", { email, password });
-    setUser(data.user);
-    return data.user;
+    await apiPost("/api/auth/login", { email, password });
+
+    // IMPORTANT: /login ne renvoie pas role -> on récupère le user complet via /me
+    const me = await apiGet("/api/auth/me");
+    setUser(me.user);
+    return me.user;
   }
 
   async function logout() {

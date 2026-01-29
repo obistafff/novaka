@@ -1,54 +1,90 @@
 const KEY = "nokava_cart_v1";
+const EVENT_NAME = "nokava-cart:updated";
+
+function notifyCartUpdated() {
+  try {
+    window.dispatchEvent(new Event(EVENT_NAME));
+  } catch {
+    // noop
+  }
+}
+
+function normalizeItems(rawValue) {
+  // Format actuel détecté: { items: [...] }
+  if (rawValue && typeof rawValue === "object" && Array.isArray(rawValue.items)) {
+    return rawValue.items;
+  }
+  // Ancien format possible: [...]
+  if (Array.isArray(rawValue)) return rawValue;
+  return [];
+}
 
 export function readCart() {
   try {
     const raw = localStorage.getItem(KEY);
-    const data = raw ? JSON.parse(raw) : [];
-    return Array.isArray(data) ? data : [];
+    const parsed = raw ? JSON.parse(raw) : null;
+    return normalizeItems(parsed);
   } catch {
     return [];
   }
 }
 
 export function writeCart(items) {
-  localStorage.setItem(KEY, JSON.stringify(items));
+  // On conserve le format { items: [...] } pour rester cohérent avec ton app
+  localStorage.setItem(KEY, JSON.stringify({ items }));
+  notifyCartUpdated();
 }
 
 export function addToCart(product, qty = 1) {
   const q = Number(qty);
   if (!Number.isFinite(q) || q < 1) return readCart();
 
-  const cart = readCart();
-  const id = product?.id ?? product?.productId ?? product?.sku ?? product?.slug ?? product?.name;
+  const items = readCart();
+
+  const productId =
+    product?.id ??
+    product?.productId ??
+    product?.sku ??
+    product?.slug ??
+    product?.name;
+
+  if (!productId) return items;
+
   const name = product?.name ?? product?.title ?? "Produit";
   const priceCents = Number(product?.priceCents ?? product?.price ?? 0);
 
-  if (!id) return cart;
+  const idx = items.findIndex((it) => it.productId === productId);
 
-  const idx = cart.findIndex((it) => it.id === id);
   if (idx >= 0) {
-    cart[idx] = { ...cart[idx], qty: cart[idx].qty + q };
+    items[idx] = { ...items[idx], qty: (Number(items[idx].qty) || 0) + q };
   } else {
-    cart.push({ id, name, priceCents, qty: q });
+    items.push({
+      productId,
+      qty: q,
+      snapshot: { name, priceCents },
+    });
   }
 
-  writeCart(cart);
-  return cart;
+  writeCart(items);
+  return items;
 }
 
-export function removeFromCart(id) {
-  const cart = readCart().filter((it) => it.id !== id);
-  writeCart(cart);
-  return cart;
+export function removeFromCart(productId) {
+  const items = readCart().filter((it) => it.productId !== productId);
+  writeCart(items);
+  return items;
 }
 
-export function setQty(id, qty) {
+export function setQty(productId, qty) {
   const q = Number(qty);
-  const cart = readCart().map((it) =>
-    it.id === id ? { ...it, qty: Math.max(1, q || 1) } : it
+  const nextQty = Math.max(1, Number.isFinite(q) ? q : 1);
+
+  const items = readCart().map((it) =>
+    it.productId === productId ? { ...it, qty: nextQty } : it
   );
-  writeCart(cart);
-  return cart;
+
+  writeCart(items);
+  return items;
 }
 
 export function clearCart() {
@@ -59,3 +95,5 @@ export function clearCart() {
 export function cartCount() {
   return readCart().reduce((sum, it) => sum + (Number(it.qty) || 0), 0);
 }
+
+export const CART_UPDATED_EVENT = EVENT_NAME;
