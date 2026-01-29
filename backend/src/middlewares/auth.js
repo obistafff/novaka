@@ -20,3 +20,16 @@ export async function requireAuth(req, res, next) {
   req.session = { sid: session.sid };
   next();
 }
+
+export function requireAdmin(req, res, next) {
+  // requireAuth doit être passé avant
+  if (!req.user) {
+    return res.status(401).json({ ok: false, error: "UNAUTHORIZED" });
+  }
+
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ ok: false, error: "FORBIDDEN" });
+  }
+
+  next();
+}
