@@ -44,6 +44,7 @@ services:
     ports:
       - "4000:4000"
     environment:
+      NODE_OPTIONS: "--dns-result-order=ipv4first"
       DATABASE_URL: "postgresql://novaka:novaka@postgres:5432/novaka?schema=public"
       MONGODB_URI: "mongodb://novaka_app_admin:novaka_app_admin_pass@mongo:27017/admin?authSource=admin&directConnection=true"
       SESSION_COOKIE_NAME: "novaka_sid"
@@ -53,6 +54,7 @@ services:
     depends_on:
       - postgres
       - mongo
+
 
 volumes:
   pg_data:
