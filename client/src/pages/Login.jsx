@@ -13,17 +13,36 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  // ✅ redirect si déjà loggé
+  // ✅ Redirect dès que user est dispo (après /me)
   useEffect(() => {
-    if (user) navigate(from, { replace: true });
+    if (!user) return;
+
+    const wantsAdmin = from.startsWith("/admin");
+    const isAdmin = user.role === "admin";
+
+    // Si le user voulait une page admin mais n'est pas admin -> account
+    if (wantsAdmin && !isAdmin) {
+      navigate("/account", { replace: true });
+      return;
+    }
+
+    // Optionnel : si l'admin vient juste de /login sans destination -> admin direct
+    if (isAdmin && from === "/") {
+      navigate("/admin/orders", { replace: true });
+      return;
+    }
+
+    // Sinon on respecte la destination demandée
+    navigate(from, { replace: true });
   }, [user, from, navigate]);
 
   async function onSubmit(e) {
     e.preventDefault();
     setError("");
+
     try {
       await login(email, password);
-      navigate(from, { replace: true });
+      // Pas de navigate ici : l'useEffect redirige quand user est mis à jour
     } catch (e) {
       setError(e?.message || "Login failed");
     }

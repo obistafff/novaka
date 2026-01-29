@@ -10,6 +10,7 @@ import Panier from "./pages/Panier.jsx";
 import Reservation from "./pages/Reservation.jsx";
 import AdminOrders from "./pages/AdminOrders.jsx";
 import Login from "./pages/Login.jsx";
+import Account from "./pages/Account.jsx";
 
 import ProtectedRoute from "./auth/ProtectedRoute.jsx";
 
@@ -46,23 +47,89 @@ function NotFound() {
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Layout><Home /></Layout>} />
-      <Route path="/carte" element={<Layout><Carte /></Layout>} />
-      <Route path="/boutique" element={<Layout><Boutique /></Layout>} />
-      <Route path="/panier" element={<Layout><Panier /></Layout>} />
-      <Route path="/reservation" element={<Layout><Reservation /></Layout>} />
-      <Route path="/login" element={<Layout><Login /></Layout>} />
-
+      {/* Public */}
       <Route
-        path="/admin/orders"
+        path="/"
+        element={
+          <Layout>
+            <Home />
+          </Layout>
+        }
+      />
+      <Route
+        path="/carte"
+        element={
+          <Layout>
+            <Carte />
+          </Layout>
+        }
+      />
+      <Route
+        path="/boutique"
+        element={
+          <Layout>
+            <Boutique />
+          </Layout>
+        }
+      />
+      <Route
+        path="/panier"
+        element={
+          <Layout>
+            <Panier />
+          </Layout>
+        }
+      />
+      <Route
+        path="/reservation"
+        element={
+          <Layout>
+            <Reservation />
+          </Layout>
+        }
+      />
+      <Route
+        path="/login"
+        element={
+          <Layout>
+            <Login />
+          </Layout>
+        }
+      />
+
+      {/* Client (auth required) */}
+      <Route
+        path="/account"
         element={
           <ProtectedRoute>
-            <Layout><AdminOrders /></Layout>
+            <Layout>
+              <Account />
+            </Layout>
           </ProtectedRoute>
         }
       />
 
-      <Route path="*" element={<Layout><NotFound /></Layout>} />
+      {/* Admin (auth + role required) */}
+      <Route
+        path="/admin/orders"
+        element={
+          <ProtectedRoute role="admin">
+            <Layout>
+              <AdminOrders />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* 404 */}
+      <Route
+        path="*"
+        element={
+          <Layout>
+            <NotFound />
+          </Layout>
+        }
+      />
     </Routes>
   );
 }
