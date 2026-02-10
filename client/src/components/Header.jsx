@@ -23,22 +23,21 @@ export default function Header() {
   return (
     <header className="site-header">
       <div className="container header-inner">
-        {/* Brand */}
+        {/* Logo (same as footer) */}
         <Link to="/" className="brand" onClick={close}>
-          <span className="brand-mark">☕</span>
-          <span>NovaKa</span>
+          <img className="header-logo" src="/img/logo.png" alt="Nokava" />
         </Link>
 
         {/* Mobile toggle */}
         <button
           className="nav-toggle"
           aria-label="Menu"
-          onClick={() => setOpen(!open)}
+          aria-expanded={open ? "true" : "false"}
+          onClick={() => setOpen((v) => !v)}
         >
           Menu
         </button>
 
-        {/* Navigation */}
         <nav className={`nav ${open ? "open" : ""}`}>
           <div className="nav-left">
             <NavLink to="/" end className="nav-link" onClick={close}>
@@ -69,11 +68,7 @@ export default function Header() {
             {user && (
               <>
                 {user.role === "admin" && (
-                  <NavLink
-                    to="/admin/orders"
-                    className="nav-link"
-                    onClick={close}
-                  >
+                  <NavLink to="/admin/orders" className="nav-link" onClick={close}>
                     Admin
                   </NavLink>
                 )}
