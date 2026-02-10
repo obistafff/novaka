@@ -25,8 +25,11 @@ export default function Header() {
       <div className="container header-inner">
         {/* Brand */}
         <Link to="/" className="brand" onClick={close}>
-          <span className="brand-mark">☕</span>
-          <span>NovaKa</span>
+          <img
+            src="/img/logo.png"
+            alt="Nokava"
+            className="header-logo"
+          />
         </Link>
 
         {/* Mobile toggle */}
