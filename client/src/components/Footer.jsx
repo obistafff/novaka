@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function Footer() {
   return (
     <footer className="site-footer">
@@ -5,8 +7,8 @@ export default function Footer() {
         {/* Brand */}
         <div className="footer-brand">
           <div className="footer-brand-row">
-            <img className="footer-logo" src="/img/logo.png" alt="Café Nokava" />
-            <div className="footer-name">Nokava</div>
+            <img className="footer-logo" src="/img/logo.png" alt="NovaKa" />
+            <div className="footer-name">NovaKa</div>
           </div>
           <p className="footer-tagline">L’art du café depuis 2014</p>
         </div>
@@ -14,9 +16,10 @@ export default function Footer() {
         {/* Navigation */}
         <div className="footer-col">
           <h4 className="footer-title">Navigation</h4>
-          <a className="footer-link" href="/">Accueil</a>
-          <a className="footer-link" href="/carte">Notre Carte</a>
-          <a className="footer-link" href="/reservation">Réservations</a>
+          <Link className="footer-link" to="/">Accueil</Link>
+          <Link className="footer-link" to="/carte">Notre carte</Link>
+          <Link className="footer-link" to="/boutique">Boutique</Link>
+          <Link className="footer-link" to="/reservation">Réservations</Link>
         </div>
 
         {/* Social */}
@@ -41,11 +44,15 @@ export default function Footer() {
       </div>
 
       <div className="container footer-bottom">
-        <a className="footer-bottom-link" href="/mentions">Mentions légales</a>
+        <Link className="footer-bottom-link" to="/mentions">
+          Mentions légales
+        </Link>
         <span className="footer-sep">|</span>
-        <a className="footer-bottom-link" href="/confidentialite">Politique de confidentialité</a>
+        <Link className="footer-bottom-link" to="/confidentialite">
+          Politique de confidentialité
+        </Link>
         <span className="footer-sep">|</span>
-        <span>© {new Date().getFullYear()} Nokava. Tous droits réservés.</span>
+        <span>© {new Date().getFullYear()} NovaKa</span>
       </div>
     </footer>
   );
