@@ -885,3 +885,43 @@ body {
   .nav.open { display: flex; }
   .nav-left, .nav-right { flex-direction: column; align-items: stretch; }
 }
+
+/* =========================
+   Header – même couleur que le footer
+   (override minimal)
+========================= */
+
+.site-header {
+  background: linear-gradient(90deg, #4a2b2b, #5b3530);
+  border-bottom: none;
+}
+
+/* Logo header */
+.header-logo {
+  height: 52px;
+  width: auto;
+  display: block;
+}
+
+/* Liens du header en blanc */
+.site-header .nav-link,
+.site-header .brand {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.site-header .nav-link:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.site-header .nav-link.active {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* Badge panier lisible sur fond foncé */
+.site-header .badge {
+  background: #fff;
+  color: #4a2b2b;
+  font-weight: 700;
+}
