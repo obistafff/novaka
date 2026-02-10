@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext.jsx";
 import { useEffect, useState } from "react";
 import { cartCount, CART_UPDATED_EVENT } from "../lib/cartStorage.js";
@@ -6,73 +6,83 @@ import { cartCount, CART_UPDATED_EVENT } from "../lib/cartStorage.js";
 export default function Header() {
   const { user } = useAuth();
   const [count, setCount] = useState(cartCount());
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    function syncCart() {
-      setCount(cartCount());
-    }
-
-    // autres onglets
-    window.addEventListener("storage", syncCart);
-    // même onglet
-    window.addEventListener(CART_UPDATED_EVENT, syncCart);
-
+    const sync = () => setCount(cartCount());
+    window.addEventListener("storage", sync);
+    window.addEventListener(CART_UPDATED_EVENT, sync);
     return () => {
-      window.removeEventListener("storage", syncCart);
-      window.removeEventListener(CART_UPDATED_EVENT, syncCart);
+      window.removeEventListener("storage", sync);
+      window.removeEventListener(CART_UPDATED_EVENT, sync);
     };
   }, []);
 
+  const close = () => setOpen(false);
+
   return (
-    <header style={{ borderBottom: "1px solid #eee" }}>
-      <div
-        className="container"
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "16px 0",
-        }}
-      >
-        {/* Left: main nav */}
-        <nav style={{ display: "flex", gap: 16, alignItems: "center" }}>
-          <Link to="/">NovaKa</Link>
-          <Link to="/carte">Carte</Link>
-          <Link to="/boutique">Boutique</Link>
-          <Link to="/reservation">Réservation</Link>
-        </nav>
+    <header className="site-header">
+      <div className="container header-inner">
+        {/* Brand */}
+        <Link to="/" className="brand" onClick={close}>
+          <span className="brand-mark">☕</span>
+          <span>NovaKa</span>
+        </Link>
 
-        {/* Right: cart + auth */}
-        <nav style={{ display: "flex", gap: 16, alignItems: "center" }}>
-          <Link to="/panier" style={{ position: "relative" }}>
-            Panier
-            {count > 0 && (
-              <span
-                style={{
-                  position: "absolute",
-                  top: -6,
-                  right: -10,
-                  background: "crimson",
-                  color: "white",
-                  borderRadius: "999px",
-                  padding: "2px 6px",
-                  fontSize: 12,
-                  lineHeight: 1,
-                }}
-              >
-                {count}
-              </span>
+        {/* Mobile toggle */}
+        <button
+          className="nav-toggle"
+          aria-label="Menu"
+          onClick={() => setOpen(!open)}
+        >
+          Menu
+        </button>
+
+        {/* Navigation */}
+        <nav className={`nav ${open ? "open" : ""}`}>
+          <div className="nav-left">
+            <NavLink to="/" end className="nav-link" onClick={close}>
+              Accueil
+            </NavLink>
+            <NavLink to="/carte" className="nav-link" onClick={close}>
+              Carte
+            </NavLink>
+            <NavLink to="/boutique" className="nav-link" onClick={close}>
+              Boutique
+            </NavLink>
+            <NavLink to="/reservation" className="nav-link" onClick={close}>
+              Réservation
+            </NavLink>
+          </div>
+
+          <div className="nav-right">
+            <NavLink to="/panier" className="nav-link" onClick={close}>
+              Panier {count > 0 && <span className="badge">{count}</span>}
+            </NavLink>
+
+            {!user && (
+              <NavLink to="/login" className="nav-link" onClick={close}>
+                Se connecter
+              </NavLink>
             )}
-          </Link>
 
-          {!user && <Link to="/login">Se connecter</Link>}
-
-          {user && (
-            <>
-              {user.role === "admin" && <Link to="/admin/orders">Admin</Link>}
-              <Link to="/account">Mon compte</Link>
-            </>
-          )}
+            {user && (
+              <>
+                {user.role === "admin" && (
+                  <NavLink
+                    to="/admin/orders"
+                    className="nav-link"
+                    onClick={close}
+                  >
+                    Admin
+                  </NavLink>
+                )}
+                <NavLink to="/account" className="nav-link" onClick={close}>
+                  Mon compte
+                </NavLink>
+              </>
+            )}
+          </div>
         </nav>
       </div>
     </header>
