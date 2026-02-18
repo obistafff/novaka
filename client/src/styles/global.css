@@ -918,3 +918,163 @@ h6 { font-size: 1rem; }
   .nav-left { justify-content: flex-start; }
   .nav-right { justify-content: flex-start; }
 }
+
+/* =========================
+   Reservation Form
+========================= */
+
+.reservation-card {
+  max-width: 900px;
+  margin: 0 auto;
+  background: var(--color-surface);
+  padding: 40px;
+  border-radius: 24px;
+  box-shadow: var(--shadow-soft);
+}
+
+.reservation-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group.full {
+  grid-column: 1 / -1;
+}
+
+.form-label {
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+.form-input,
+.form-textarea {
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.1);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  background: #fff;
+  transition: all 0.2s ease;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(122,74,46,0.15);
+}
+
+.form-textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.form-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+/* =========================
+   Reservation — clean & premium (scoped)
+========================= */
+
+.page-reservation .reservation-card{
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 40px;
+  border-radius: 24px;
+}
+
+.page-reservation .form{
+  display: grid;
+  gap: 18px;
+}
+
+.page-reservation .grid-2{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 22px;
+}
+
+.page-reservation .field{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.page-reservation .field label{
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--color-text);
+}
+
+.page-reservation .field input,
+.page-reservation .field textarea{
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.14);
+  background: rgba(255,255,255,0.95);
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.page-reservation .field input:focus,
+.page-reservation .field textarea:focus{
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(122, 74, 46, 0.14);
+}
+
+.page-reservation .field textarea{
+  min-height: 120px;
+  resize: vertical;
+}
+
+.page-reservation .field-error{
+  margin: 0;
+  font-size: 0.85rem;
+  color: #b42318;
+}
+
+.page-reservation .form-actions{
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.page-reservation .form-status{
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.85);
+}
+
+.page-reservation .form-status-text{
+  margin: 0;
+  font-family: var(--font-body);
+}
+
+.page-reservation .muted-note{
+  margin-top: 14px;
+  color: var(--color-muted);
+  font-family: var(--font-body);
+}
+
+@media (max-width: 760px){
+  .page-reservation .reservation-card{ padding: 22px; }
+  .page-reservation .grid-2{ grid-template-columns: 1fr; }
+}
